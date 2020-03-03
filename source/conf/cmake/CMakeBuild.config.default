@@ -272,3 +272,9 @@ RAM_APPLICATION_AMOUNT=0x0DC40
 # Adjust them in $BLUENET_DIR/include/third/nrf/generic_gcc_nrf52.ld for now! (adjusted version of $NRF5_DIR/config/nrf52832/armgcc/generic_gcc_nrf52.ld)
 ATTR_TABLE_SIZE=0x500
 HEAP_SIZE=20000
+
+# We implement IPC (inter-process communication) by reserving a particular page.
+IPC_START_ADDRESS=0x6D000
+IPC_LENGTH=0x1000
+
+

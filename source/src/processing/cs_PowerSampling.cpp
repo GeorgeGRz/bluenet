@@ -566,8 +566,6 @@ void PowerSampling::calculatePower(power_t & power) {
 	int32_t currentRmsMA = sqrt((double)cSquareSum * _currentMultiplier * _currentMultiplier / numSamples) * 1000;
 	int32_t voltageRmsMilliVolt = sqrt((double)vSquareSum * _voltageMultiplier * _voltageMultiplier / numSamples) * 1000;
 
-
-
 	////////////////////////////////////////////////////////////////////////////////
 	// Calculate Irms of median filtered samples, and filter over multiple periods
 	////////////////////////////////////////////////////////////////////////////////

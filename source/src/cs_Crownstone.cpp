@@ -45,6 +45,7 @@
 #include <drivers/cs_RTC.h>
 #include <drivers/cs_Temperature.h>
 #include <drivers/cs_Timer.h>
+#include <ipc/cs_IPC.h>
 #include <processing/cs_EncryptionHandler.h>
 #include <processing/cs_BackgroundAdvHandler.h>
 #include <processing/cs_TapToToggle.h>
@@ -985,6 +986,8 @@ void Crownstone::startHFClock() {
  * main. If you enable a new peripheral device, make sure you enable the corresponding event handler there as well.
  *********************************************************************************************************************/
 
+extern ipc_handler_t* __start_ipc_handler0;
+
 int main() {
 #ifdef TEST_PIN
 	nrf_gpio_cfg_output(TEST_PIN);
@@ -1042,6 +1045,26 @@ int main() {
 
 	printNfcPins();
 	LOG_FLUSH();
+	
+	LOGi("Get IPC Handlers");
+	getIPCHandlers();
+	for (unsigned char i = 0; i < 5; ++i) {
+		if (IPCHandlerExists(i)) {
+			LOGi("Handler %i exists", i);
+		} else {
+			LOGi("Handler %i does not exist", i);
+		}
+	}
+	for (unsigned char i = 0; i < 5; ++i) {
+		if (IPCHandlerExists(i)) {
+			ipc_handler_t *handler = getIPCHandler(i);
+			LOGi("Call function of handler %i", i);
+			char args[2] = { 2, 2 };
+			int result = handler->f(args);
+			LOGi("Result is %i", result);
+		}
+	}
+	
 
 //	// Make a "clicker"
 //	nrf_delay_ms(1000);

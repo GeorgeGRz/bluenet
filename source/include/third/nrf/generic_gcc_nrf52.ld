@@ -9,6 +9,8 @@ GROUP(-lgcc -lc -lnosys)
 
 INCLUDE "nrf_symbols.ld"
 
+IPC_BLOCK_SIZE = 0x30;
+
 /**
  * See S132_nrf52_6.0.0_release_notes.pdf.
  *
@@ -36,6 +38,11 @@ INCLUDE "nrf_symbols.ld"
 MEMORY
 {
   FLASH (rx) : ORIGIN = APPLICATION_START_ADDRESS, LENGTH = APPLICATION_LENGTH
+  IPC0 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 0, LENGTH = IPC_BLOCK_SIZE
+  IPC1 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 1, LENGTH = IPC_BLOCK_SIZE
+  IPC2 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 2, LENGTH = IPC_BLOCK_SIZE
+  IPC3 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 3, LENGTH = IPC_BLOCK_SIZE
+  IPC4 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 4, LENGTH = IPC_BLOCK_SIZE
   RAM (rwx) :  ORIGIN = RAM_R1_BASE, LENGTH = RAM_APPLICATION_AMOUNT
   CORE_BL_RAM (rw) :     ORIGIN = 0x2000fd00, LENGTH = 0x300
   UICR_BOOTADDR (r) :    ORIGIN = 0x10001014, LENGTH = 0x04
@@ -180,6 +187,36 @@ SECTIONS
     KEEP(*(SORT(.nrf_mesh_flash.*)))
     PROVIDE(__stop_nrf_mesh_flash = .);
   } > FLASH
+  .ipc_handler0 :
+  {
+	  PROVIDE(__start_ipc_handler0 = .);
+	  KEEP(*(SORT(.ipc_handler0*)))
+	  PROVIDE(__stop_ipc_handler0 = .);
+  } > IPC0
+  .ipc_handler1 :
+  {
+	  PROVIDE(__start_ipc_handler1 = .);
+	  KEEP(*(SORT(.ipc_handler1*)))
+	  PROVIDE(__stop_ipc_handler1 = .);
+  } > IPC1
+  .ipc_handler2 :
+  {
+	  PROVIDE(__start_ipc_handler2 = .);
+	  KEEP(*(SORT(.ipc_handler2*)))
+	  PROVIDE(__stop_ipc_handler2 = .);
+  } > IPC2
+  .ipc_handler3 :
+  {
+	  PROVIDE(__start_ipc_handler3 = .);
+	  KEEP(*(SORT(.ipc_handler3*)))
+	  PROVIDE(__stop_ipc_handler3 = .);
+  } > IPC3
+  .ipc_handler4 :
+  {
+	  PROVIDE(__start_ipc_handler4 = .);
+	  KEEP(*(SORT(.ipc_handler4*)))
+	  PROVIDE(__stop_ipc_handler4 = .);
+  } > IPC4
 } INSERT AFTER .text
 
 INCLUDE "nrf_common.ld"
