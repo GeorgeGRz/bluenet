@@ -3,8 +3,9 @@
 SEARCH_DIR(.)
 GROUP(-lgcc -lc -lnosys)
 
-BOOTLOADER_START_ADDRESS = DEFINED(BOOTLOADER_START_ADDRESS) ? BOOTLOADER_START_ADDRESS : 0x76000;
-BOOTLOADER_LENGTH = DEFINED(BOOTLOADER_LENGTH) ? BOOTLOADER_LENGTH : 0x8000;
+INCLUDE "nrf_symbols.ld"
+
+IPC_BLOCK_SIZE = 0x30;
 
 MEMORY
 {
@@ -13,6 +14,11 @@ MEMORY
   /* FLASH (rx) : ORIGIN = 0x71000, LENGTH = 0xd000 */
   /* Without gc-sections: FLASH (rx) : ORIGIN = 0x68000, LENGTH = 0x10000 */
   FLASH (rx) : ORIGIN = BOOTLOADER_START_ADDRESS, LENGTH = BOOTLOADER_LENGTH
+  IPC0 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 0, LENGTH = IPC_BLOCK_SIZE
+  IPC1 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 1, LENGTH = IPC_BLOCK_SIZE
+  IPC2 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 2, LENGTH = IPC_BLOCK_SIZE
+  IPC3 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 3, LENGTH = IPC_BLOCK_SIZE
+  IPC4 (rx) : ORIGIN = IPC_START_ADDRESS + IPC_BLOCK_SIZE * 4, LENGTH = IPC_BLOCK_SIZE
   RAM (rwx) :  ORIGIN = 0x200057b8, LENGTH = 0xa848
   mbr_params_page (r) : ORIGIN = 0x0007E000, LENGTH = 0x1000
   bootloader_settings_page (r) : ORIGIN = 0x0007F000, LENGTH = 0x1000
@@ -152,6 +158,36 @@ SECTIONS
     KEEP(*(SORT(.sdh_soc_observers*)))
     PROVIDE(__stop_sdh_soc_observers = .);
   } > FLASH
+  .ipc_handler0 :
+  {
+	  PROVIDE(__start_ipc_handler0 = .);
+	  KEEP(*(SORT(.ipc_handler0*)))
+	  PROVIDE(__stop_ipc_handler0 = .);
+  } > IPC0
+  .ipc_handler1 :
+  {
+	  PROVIDE(__start_ipc_handler1 = .);
+	  KEEP(*(SORT(.ipc_handler1*)))
+	  PROVIDE(__stop_ipc_handler1 = .);
+  } > IPC1
+  .ipc_handler2 :
+  {
+	  PROVIDE(__start_ipc_handler2 = .);
+	  KEEP(*(SORT(.ipc_handler2*)))
+	  PROVIDE(__stop_ipc_handler2 = .);
+  } > IPC2
+  .ipc_handler3 :
+  {
+	  PROVIDE(__start_ipc_handler3 = .);
+	  KEEP(*(SORT(.ipc_handler3*)))
+	  PROVIDE(__stop_ipc_handler3 = .);
+  } > IPC3
+  .ipc_handler4 :
+  {
+	  PROVIDE(__start_ipc_handler4 = .);
+	  KEEP(*(SORT(.ipc_handler4*)))
+	  PROVIDE(__stop_ipc_handler4 = .);
+  } > IPC4
 
 } INSERT AFTER .text
 

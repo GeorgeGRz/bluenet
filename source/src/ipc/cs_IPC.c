@@ -61,11 +61,6 @@ ipc_handler_t * getIPCHandler(unsigned char index) {
 	return &handlers[index];
 }
 
-int ipc_crownstone(char *args) {
-	char value = args[0];
-	return (int)value + 1;
-}
-
 #ifdef __cplusplus
 }
 #endif

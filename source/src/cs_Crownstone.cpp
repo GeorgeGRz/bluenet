@@ -1060,8 +1060,13 @@ int main() {
 			ipc_handler_t *handler = getIPCHandler(i);
 			LOGi("Call function of handler %i", i);
 			char args[2] = { 2, 2 };
-			int result = handler->f(args);
-			LOGi("Result is %i", result);
+			char result[2] = { 0, 0 };
+			int success = handler->f(args, result);
+			if (success) {
+				LOGi("Result is [%i,%i]", result[0], result[i]);
+			} else {
+				LOGi("Function return value != success");
+			}
 		}
 	}
 	

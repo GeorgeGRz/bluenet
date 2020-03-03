@@ -19,7 +19,7 @@ PROJECT(${PROJECT_NAME})
 # The directory with some of the FindXXX modules
 #SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/conf;${CMAKE_SOURCE_DIR}/conf/cmake")
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${DEFAULT_MODULES_PATH}")
-MESSAGE(STATUS "bootloader: Search for FindX files in ${CMAKE_MODULE_PATH}")
+#MESSAGE(STATUS "bootloader: Search for FindX files in ${CMAKE_MODULE_PATH}")
 
 #######################################################################################################################
 
@@ -131,6 +131,9 @@ ELSE()
 	LIST(APPEND BOOTLOADER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/bootloader/dfu_public_key.c")
 	LIST(APPEND BOOTLOADER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/cfg/cs_Boards.c")
 	LIST(APPEND BOOTLOADER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/bootloader/dev_info_service.c")
+	
+	LIST(APPEND BOOTLOADER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/ipc/cs_IPC.c")
+	LIST(APPEND BOOTLOADER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/bootloader/cs_BootloaderIPC.c")
 
 	LIST(APPEND BOOTLOADER_SOURCE_FILES "${NRF5_DIR}/modules/nrfx/mdk/gcc_startup_nrf52.S")
 	set_property(SOURCE "${NRF5_DIR}/modules/nrfx/mdk/gcc_startup_nrf52.S" PROPERTY LANGUAGE C)
@@ -297,13 +300,17 @@ ELSE()
 	ADD_DEFINITIONS("-DNRF_DFU_SETTINGS_VERSION=1")
 	
 ENDIF()
+		
+message(STATUS "bootloader: Configure nrf_symbols.ld file")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/nrf_symbols.ld.in" "${CMAKE_CURRENT_BINARY_DIR}/nrf_symbols.ld" @ONLY)
+list(APPEND GENERATED_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/nrf_symbols.ld")
 
 # Overwrite sdk config options
 ADD_DEFINITIONS("-DUSE_APP_CONFIG")
 
 ADD_DEFINITIONS("-DBOOTLOADER_VERSION=${BOOTLOADER_VERSION}")
 		
-message(STATUS "Configure cs_BootloaderConfig.cpp file")
+message(STATUS "bootloader: Configure cs_BootloaderConfig.cpp file")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cs_BootloaderConfig.c.in" "${CMAKE_CURRENT_BINARY_DIR}/cs_BootloaderConfig.c" @ONLY)
 list(APPEND GENERATED_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/cs_BootloaderConfig.c")
 
@@ -322,7 +329,7 @@ SET(CS_LINKER_FLAGS "-Wl,--defsym=BOOTLOADER_START_ADDRESS=${BOOTLOADER_START_AD
 SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${CS_LINKER_FLAGS}")
 
 # Remove sections that are part of UICR (so objcopy does not generate very large files)
-MESSAGE(STATUS "Remove sections .uicr_bootloader_start_address and .uicr_mbr_params_page (or objcopy will generate huge files)")
+MESSAGE(STATUS "bootloader: Remove sections .uicr_bootloader_start_address and .uicr_mbr_params_page (or objcopy will generate huge files)")
 SET(REMOVE_SECTIONS --remove-section .uicr_bootloader_start_address --remove-section .uicr_mbr_params_page)
 
 # Add post-build target to display size information

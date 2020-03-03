@@ -13,7 +13,7 @@ extern "C" {
 
 #include <stddef.h>
 
-typedef int (*ipc_func_t)(char* args);
+typedef int (*ipc_func_t)(char* args, char* result);
 
 /**
  * The function handler to be written by the module that is registering itself. It is registering:
@@ -56,16 +56,6 @@ typedef struct ipc_handler ipc_handler_t;
 		.length = 0xFF,                                 \
 		.checksum = 0xFF,                               \
 	}
-
-/**
- * The function that is registered by the Crownstone itself.
- */
-int ipc_crownstone(char *args);
-
-/**
- * Register the function at location 0.
- */
-REGISTER_IPC_HANDLER(ipc_crownstone, 0);
 
 ipc_handler_t handlers[MAX_IPC_HANDLERS];
 
